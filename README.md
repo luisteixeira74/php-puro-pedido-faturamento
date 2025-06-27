@@ -36,7 +36,7 @@ php index.php
 
 ## Saída esperada
 
-[CRM] Registrando cliente Luis Fernando no CRM
+[CRM] Registrando cliente José da Silva no CRM
 [Faturamento] Emitindo nota para o pedido #101 no valor de R$ 129.99
 
 ## Rodar testes
