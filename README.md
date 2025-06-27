@@ -39,9 +39,30 @@ php index.php
 [CRM] Registrando cliente José da Silva no CRM
 [Faturamento] Emitindo nota para o pedido #101 no valor de R$ 129.99
 
+- Salva na tabela pedidos no MySQL
+
 ## Rodar testes
 
 vendor/bin/phpunit tests
+
+# Como Rodar com Docker
+
+## Buildar o container
+
+docker compose build
+
+## Rodar o projeto
+
+docker compose up
+
+## Executa a index manualmente para debug
+
+docker exec -it integrador-app php index.php
+
+## Executar testes
+
+docker compose run --rm app vendor/bin/phpunit tests
+
 
 
 
