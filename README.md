@@ -63,6 +63,18 @@ docker exec -it integrador-app php index.php
 
 docker compose run --rm app vendor/bin/phpunit tests
 
+## Exemplo do conteúdo do .env (para simular o projeto)
+
+```bash
+DB_HOST=mysql
+DB_DATABASE=pedidos_db
+DB_USERNAME=root
+DB_PASSWORD=root
+
+REDIS_HOST=redis
+```
+
+---
 
 
 
