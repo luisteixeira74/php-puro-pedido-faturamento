@@ -2,12 +2,12 @@
 
 namespace App\Integration;
 
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 
 class FaturamentoIntegratorService implements PedidoIntegratorInterface
 {
-    public function integrar(PedidoDTO $pedido): void
+    public function integrar(Pedido $pedido): void
     {
-        echo "[Faturamento] Emitindo nota para o pedido #{$pedido->id} no valor de R$ {$pedido->valor}\n";
+        echo "[Faturamento] Emitindo nota para o pedido #{$pedido->getId()} no valor de R$ {$pedido->getValor()}\n";
     }
 }

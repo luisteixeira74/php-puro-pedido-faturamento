@@ -4,7 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use App\Integration\FaturamentoIntegratorService;
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 
 class FaturamentoIntegratorServiceTest extends TestCase
 {
@@ -13,7 +13,7 @@ class FaturamentoIntegratorServiceTest extends TestCase
         $this->expectOutputString("[Faturamento] Emitindo nota para o pedido #1 no valor de R$ 100\n");
 
         $faturamento = new FaturamentoIntegratorService();
-        $pedido = new PedidoDTO(1, 'Manuel da Silva', 'Novo pedido', 100.0);
+        $pedido = new Pedido(1, 'Manuel da Silva', 'Novo pedido', 100.0);
         $faturamento->integrar($pedido);
     }
 }

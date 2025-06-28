@@ -3,7 +3,7 @@
 require 'vendor/autoload.php';
 
 use App\DTO\PedidoDTO;
-use App\Cache\RedisCacheService;
+use Infra\Cache\RedisCacheService;
 use App\Repository\PedidoRepository;
 use App\Integration\CRMIntegratorService;
 use App\Integration\FaturamentoIntegratorService;
@@ -26,18 +26,18 @@ try {
         die('The Redis extension is not installed or enabled. Please install/enable it in your PHP environment.');
     }
 
-    $host = getenv('REDIS_HOST') ?: 'redis';
     $redis = new Redis();
+    $host = getenv('REDIS_HOST') ?: 'redis';
     $redis->connect($host, 6379);
 
-    // Cache usando o Redis
-    $cache = new RedisCacheService($redis);
+    // Cria o serviço de cache
+    $cacheService = new RedisCacheService($redis);
 
     // Repository com cache e PDO
-    $repo = new PedidoRepository($pdo, $cache);
+    $repo = new PedidoRepository($pdo, $cacheService);
 
     // Novo pedido DTO
-    $pedido = new PedidoDTO(101, 'José da Silva', 'Novo pedido', 129.99);
+    $pedidoDTO = new PedidoDTO(101, 'José da Silva', 'Novo pedido', 200.00);
 
     // Converte para Entity antes de usar no domínio
     $pedidoEntity = new Domain\Entity\Pedido(
@@ -46,6 +46,8 @@ try {
         $pedidoDTO->descricao,
         $pedidoDTO->valor
     );
+
+    $pedidoEntity->aplicarDesconto(10); // Aplica 10% de desconto antes de salvar
 
     // Serviço orquestrador com integrações e repo
     $servico = new IntegradorMultiploService(

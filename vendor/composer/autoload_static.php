@@ -25,6 +25,10 @@ class ComposerStaticInit045658d81f6d9d3243e731dda7bf04d1
             'Psr\\Http\\Client\\' => 16,
             'PhpParser\\' => 10,
         ),
+        'I' => 
+        array (
+            'Infra\\' => 6,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -59,6 +63,10 @@ class ComposerStaticInit045658d81f6d9d3243e731dda7bf04d1
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'Infra\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Infra',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

@@ -2,12 +2,12 @@
 
 namespace App\Integration;
 
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 
 class CRMIntegratorService implements PedidoIntegratorInterface
 {
-    public function integrar(PedidoDTO $pedido): void
+    public function integrar(Pedido $pedido): void
     {
-        echo "[CRM] Registrando cliente {$pedido->cliente} no CRM\n";
+        echo "[CRM] Registrando cliente {$pedido->getCliente()} no CRM\n";
     }
 }

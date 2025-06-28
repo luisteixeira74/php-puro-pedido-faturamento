@@ -1,13 +1,20 @@
 <?php
-
 namespace App\DTO;
 
-readonly class PedidoDTO
+class PedidoDTO
 {
-    public function __construct(
-        public int $id,
-        public string $cliente,
-        public string $descricao,
-        public float $valor,
-    ) {}
+    public int $id;
+    public string $cliente;
+    public string $descricao;
+    public float $valor;
+    public bool $descontoAplicado;
+
+    public function __construct(int $id, string $cliente, string $descricao, float $valor, bool $descontoAplicado = false)
+    {
+        $this->id = $id;
+        $this->cliente = $cliente;
+        $this->descricao = $descricao;
+        $this->valor = $valor;
+        $this->descontoAplicado = $descontoAplicado;
+    }
 }

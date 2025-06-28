@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use App\Cache\RedisCacheService;
+use Infra\Cache\RedisCacheService;
 use App\DTO\PedidoDTO;
 
 class RedisCacheServiceTest extends TestCase

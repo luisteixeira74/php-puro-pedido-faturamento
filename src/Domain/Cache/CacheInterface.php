@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cache;
+namespace Domain\Cache;
 
 use Domain\Entity\Pedido;
 

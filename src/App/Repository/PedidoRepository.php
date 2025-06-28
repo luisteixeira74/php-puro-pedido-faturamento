@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use PDO;
 use Domain\Entity\Pedido;
-use App\Cache\CacheInterface;
+use Domain\Cache\CacheInterface;
 
 class PedidoRepository
 {
@@ -12,12 +12,22 @@ class PedidoRepository
         private PDO $pdo,
         private CacheInterface $cache
     ) {}
-
-    public function salvar(Pedido $pedido): void {
+    
+    /**
+     * @param \Domain\Entity\Pedido $pedido
+     */
+    public function salvar(Pedido $pedido): void
+    {
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO pedidos (cliente, descricao, valor) VALUES (?, ?, ?)");
-            $stmt->execute([$pedido->getCliente(), $pedido->getDescricao(), 
-                $pedido->getValor()]);
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO pedidos (cliente, descricao, valor, desconto_aplicado) VALUES (?, ?, ?, ?)"
+            );
+            $stmt->execute([
+                $pedido->getCliente(),
+                $pedido->getDescricao(),
+                $pedido->getValor(),
+                $pedido->isDescontoAplicado() ? 1 : 0,
+            ]);
 
             $this->cache->salvar($pedido);
         } catch (\PDOException $e) {
@@ -25,9 +35,11 @@ class PedidoRepository
         }
     }
 
-    public function buscar(int $id): ?Pedido {
+     public function buscar(int $id): ?Pedido
+    {
         $pedido = $this->cache->buscar($id);
         if ($pedido !== null) {
+            // Ideal usar um logger ao invés de echo em produção
             echo "[CACHE] Pedido carregado do cache\n";
             return $pedido;
         }
@@ -41,12 +53,14 @@ class PedidoRepository
         }
 
         $pedido = new Pedido(
-            id: (int) $dados['id'],
-            cliente: $dados['cliente'],
-            descricao: $dados['descricao'],
-            valor: (float) $dados['valor']
+            (int) $dados['id'],
+            $dados['cliente'],
+            $dados['descricao'],
+            (float) $dados['valor'],
+            $dados['desconto_aplicado'] ? 1 : 0
         );
 
+        // Salva no cache após buscar do banco
         $this->cache->salvar($pedido);
 
         return $pedido;

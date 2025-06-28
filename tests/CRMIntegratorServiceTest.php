@@ -4,7 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use App\Integration\CRMIntegratorService;
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 
 class CRMIntegratorServiceTest extends TestCase
 {
@@ -13,7 +13,7 @@ class CRMIntegratorServiceTest extends TestCase
         $this->expectOutputString("[CRM] Registrando cliente Manuel da Silva no CRM\n");
 
         $crm = new CRMIntegratorService();
-        $pedido = new PedidoDTO(1, 'Manuel da Silva', 'Novo pedido', 100.0);
+        $pedido = new Pedido(1, 'Manuel da Silva', 'Novo pedido', 100.0);
         $crm->integrar($pedido);
     }
 }
