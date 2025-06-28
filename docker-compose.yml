@@ -33,12 +33,11 @@ services:
     container_name: integrador-app
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     command: tail -f /dev/null # Keep the container running
     depends_on:
       mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
-
-    env_file:
-      - .env

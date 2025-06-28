@@ -13,7 +13,7 @@ class FaturamentoIntegratorServiceTest extends TestCase
         $this->expectOutputString("[Faturamento] Emitindo nota para o pedido #1 no valor de R$ 100\n");
 
         $faturamento = new FaturamentoIntegratorService();
-        $pedido = new PedidoDTO(1, 'Manuel da Silva', 100.0);
+        $pedido = new PedidoDTO(1, 'Manuel da Silva', 'Novo pedido', 100.0);
         $faturamento->integrar($pedido);
     }
 }

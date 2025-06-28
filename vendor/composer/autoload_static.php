@@ -33,6 +33,7 @@ class ComposerStaticInit045658d81f6d9d3243e731dda7bf04d1
         ),
         'D' => 
         array (
+            'Domain\\' => 7,
             'DeepCopy\\' => 9,
         ),
         'A' => 
@@ -70,6 +71,10 @@ class ComposerStaticInit045658d81f6d9d3243e731dda7bf04d1
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Domain\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Domain',
         ),
         'DeepCopy\\' => 
         array (

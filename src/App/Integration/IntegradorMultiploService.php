@@ -2,7 +2,7 @@
 
 namespace App\Integration;
 
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 use App\Repository\PedidoRepository;
 
 class IntegradorMultiploService
@@ -15,7 +15,7 @@ class IntegradorMultiploService
         private PedidoRepository $repository
     ) {}
 
-    public function integrarTudo(PedidoDTO $pedido): void
+    public function integrarTudo(Pedido $pedido): void
     {
         foreach ($this->integradores as $integrador) {
             $integrador->integrar($pedido);

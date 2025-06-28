@@ -13,7 +13,7 @@ class CRMIntegratorServiceTest extends TestCase
         $this->expectOutputString("[CRM] Registrando cliente Manuel da Silva no CRM\n");
 
         $crm = new CRMIntegratorService();
-        $pedido = new PedidoDTO(1, 'Manuel da Silva', 100.0);
+        $pedido = new PedidoDTO(1, 'Manuel da Silva', 'Novo pedido', 100.0);
         $crm->integrar($pedido);
     }
 }

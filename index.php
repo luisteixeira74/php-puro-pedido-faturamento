@@ -22,13 +22,11 @@ try {
 
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Redis puro
-    $host = getenv('REDIS_HOST') ?: 'redis';
-
     if (!class_exists('Redis')) {
         die('The Redis extension is not installed or enabled. Please install/enable it in your PHP environment.');
     }
 
+    $host = getenv('REDIS_HOST') ?: 'redis';
     $redis = new Redis();
     $redis->connect($host, 6379);
 
@@ -41,13 +39,21 @@ try {
     // Novo pedido DTO
     $pedido = new PedidoDTO(101, 'José da Silva', 'Novo pedido', 129.99);
 
+    // Converte para Entity antes de usar no domínio
+    $pedidoEntity = new Domain\Entity\Pedido(
+        $pedidoDTO->id,
+        $pedidoDTO->cliente,
+        $pedidoDTO->descricao,
+        $pedidoDTO->valor
+    );
+
     // Serviço orquestrador com integrações e repo
     $servico = new IntegradorMultiploService(
         [new CRMIntegratorService(), new FaturamentoIntegratorService()],
         $repo
     );
 
-    $servico->integrarTudo($pedido);
+    $servico->integrarTudo($pedidoEntity);
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }

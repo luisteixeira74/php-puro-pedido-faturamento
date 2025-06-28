@@ -2,9 +2,9 @@
 
 namespace App\Integration;
 
-use App\DTO\PedidoDTO;
+use Domain\Entity\Pedido;
 
 interface PedidoIntegratorInterface
 {
-    public function integrar(PedidoDTO $pedido): void;
+    public function integrar(Pedido $pedido): void;
 }
