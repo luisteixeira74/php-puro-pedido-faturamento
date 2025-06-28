@@ -1,0 +1,36 @@
+# Arquivos do Composer
+/vendor/
+
+# Arquivos de ambiente
+.env
+
+# Arquivos de log
+*.log
+
+# Cache do PHPUnit
+.phpunit.result.cache
+
+# Diretórios de cache e builds
+/cache/
+/build/
+/tmp/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Cobertura de testes
+coverage/
+
+# Arquivos gerados por container
+*.pid
+*.sock
+
+# Ignora redis e mysql persistência (caso tenha usado volumes locais)
+redis-data/
+mysql-data/
