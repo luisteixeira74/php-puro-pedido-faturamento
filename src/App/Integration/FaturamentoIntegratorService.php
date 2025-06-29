@@ -8,6 +8,6 @@ class FaturamentoIntegratorService implements PedidoIntegratorInterface
 {
     public function integrar(Pedido $pedido): void
     {
-        echo "[Faturamento] Emitindo nota para o pedido #{$pedido->getId()} no valor de R$ {$pedido->getValor()}\n";
+        error_log("[Faturamento] Emitindo nota para o pedido #{$pedido->getId()} no valor de R$ {$pedido->getValor()}\n");
     }
 }

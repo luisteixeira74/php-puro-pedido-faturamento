@@ -30,7 +30,7 @@ O projeto aplica princípios de boas práticas como:
 composer install
 ```
 
-## Executar exemplo
+## Executar para criar pedido
 
 php index.php
 
@@ -40,6 +40,23 @@ php index.php
 [Faturamento] Emitindo nota para o pedido #101 no valor de R$ 129.99
 
 - Salva na tabela pedidos no MySQL
+
+## Rotas disponíveis
+
+Criar pedido
+```bash
+curl -X POST http://localhost:8080/pedido
+```
+
+Pedido por ID
+```bash
+curl http://localhost:8080/pedido/1
+```
+
+Todos pedidos
+```bash
+curl http://localhost:8080/pedidos
+```
 
 ## Rodar testes
 

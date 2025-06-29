@@ -12,4 +12,5 @@ COPY . .
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install
 
-CMD ["php", "index.php"]
+CMD ["php", "-S", "0.0.0.0:8080", "index.php"]
+

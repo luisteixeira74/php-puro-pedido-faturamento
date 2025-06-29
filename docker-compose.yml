@@ -35,7 +35,7 @@ services:
       - "8080:8080"
     env_file:
       - .env
-    command: tail -f /dev/null # Keep the container running
+    #command: tail -f /dev/null # Keep the container running
     depends_on:
       mysql:
         condition: service_healthy

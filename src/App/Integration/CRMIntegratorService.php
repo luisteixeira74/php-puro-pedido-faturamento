@@ -8,6 +8,6 @@ class CRMIntegratorService implements PedidoIntegratorInterface
 {
     public function integrar(Pedido $pedido): void
     {
-        echo "[CRM] Registrando cliente {$pedido->getCliente()} no CRM\n";
+        error_log("[CRM] Registrando cliente {$pedido->getCliente()} no CRM\n");
     }
 }

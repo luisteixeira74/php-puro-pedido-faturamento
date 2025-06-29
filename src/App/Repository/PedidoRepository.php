@@ -35,12 +35,11 @@ class PedidoRepository
         }
     }
 
-     public function buscar(int $id): ?Pedido
+     public function buscarPorId(int $id): ?Pedido
     {
         $pedido = $this->cache->buscar($id);
         if ($pedido !== null) {
-            // Ideal usar um logger ao invés de echo em produção
-            echo "[CACHE] Pedido carregado do cache\n";
+            error_log("[CACHE] Pedido carregado do cache\n");
             return $pedido;
         }
 
@@ -64,5 +63,32 @@ class PedidoRepository
         $this->cache->salvar($pedido);
 
         return $pedido;
+    }
+
+    public function buscarTodos(): array
+    {
+        $stmt = $this->pdo->query("SELECT id, cliente, descricao, valor, desconto_aplicado  FROM pedidos");
+        $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($pedidos)) {
+            return [];
+        }
+
+        $resultados = [];
+        foreach ($pedidos as $dados) {
+            $pedido = new Pedido(
+                (int) $dados['id'],
+                $dados['cliente'],
+                $dados['descricao'],
+                (float) $dados['valor'],
+                $dados['desconto_aplicado'] ? 1 : 0
+            );
+            $resultados[] = $pedido;
+
+            // Salva no cache após buscar do banco
+            $this->cache->salvar($pedido);
+        }
+
+        return $resultados;
     }
 }

@@ -41,6 +41,11 @@ class Pedido
         return $this->valor;
     }
 
+    public function setDescontoAplicado(): void
+    {
+        $this->descontoAplicado = true;
+    }
+
     public function isDescontoAplicado(): bool
     {
         return $this->descontoAplicado;
@@ -57,6 +62,6 @@ class Pedido
         }
 
         $this->valor = $this->valor * (1 - $percentual / 100);
-        $this->descontoAplicado = true;
+        $this->setDescontoAplicado();
     }
 }

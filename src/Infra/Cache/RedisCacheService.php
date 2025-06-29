@@ -32,12 +32,9 @@ class RedisCacheService implements CacheInterface
                 $id,
                 $data['cliente'],
                 $data['descricao'],
-                (float) $data['valor']
+                (float) $data['valor'],
+                (bool) $data['desconto_aplicado']
             );
-
-            if (!empty($data['desconto_aplicado'])) {
-                $pedido->aplicarDesconto(0); // você pode criar um método setDescontoAplicado(bool) se quiser evitar aplicar novamente
-            }
 
             return $pedido;
         }

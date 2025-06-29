@@ -1,62 +1,56 @@
 <?php
 
 require 'vendor/autoload.php';
+header('Content-Type: application/json');
 
-use App\DTO\PedidoDTO;
 use Infra\Cache\RedisCacheService;
 use App\Repository\PedidoRepository;
-use App\Integration\CRMIntegratorService;
-use App\Integration\FaturamentoIntegratorService;
-use App\Integration\IntegradorMultiploService;
+use App\Http\PedidoHandler;
 
 try {
-   // Conexão MySQL
     $pdo = new PDO(
         "mysql:host=" . getenv('DB_HOST') . ";dbname=" . getenv('DB_DATABASE') . ";charset=utf8mb4",
         getenv('DB_USERNAME'),
         getenv('DB_PASSWORD'),
-        [
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
-        ]
+        [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"]
     );
-
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     if (!class_exists('Redis')) {
-        die('The Redis extension is not installed or enabled. Please install/enable it in your PHP environment.');
+        http_response_code(500);
+        echo json_encode(['error' => 'Extensão Redis não instalada.']);
+        exit;
     }
 
     $redis = new Redis();
     $host = getenv('REDIS_HOST') ?: 'redis';
     $redis->connect($host, 6379);
 
-    // Cria o serviço de cache
     $cacheService = new RedisCacheService($redis);
-
-    // Repository com cache e PDO
     $repo = new PedidoRepository($pdo, $cacheService);
+    $handler = new PedidoHandler($repo);
 
-    // Novo pedido DTO
-    $pedidoDTO = new PedidoDTO(101, 'José da Silva', 'Novo pedido', 200.00);
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $method = $_SERVER['REQUEST_METHOD'];
 
-    // Converte para Entity antes de usar no domínio
-    $pedidoEntity = new Domain\Entity\Pedido(
-        $pedidoDTO->id,
-        $pedidoDTO->cliente,
-        $pedidoDTO->descricao,
-        $pedidoDTO->valor
-    );
+    if ($method === 'POST' && $requestUri === '/pedido') {
+        $handler->criarPedido();
+        exit;
+    }
 
-    $pedidoEntity->aplicarDesconto(10); // Aplica 10% de desconto antes de salvar
+    if ($method === 'GET' && preg_match('#^/pedido/(\d+)$#', $requestUri, $matches)) {
+        $handler->buscarPedidoPorId((int)$matches[1]);
+        exit;
+    }
 
-    // Serviço orquestrador com integrações e repo
-    $servico = new IntegradorMultiploService(
-        [new CRMIntegratorService(), new FaturamentoIntegratorService()],
-        $repo
-    );
+    if ($method === 'GET' && $requestUri === '/pedidos') {
+        $handler->buscarTodosPedidos();
+        exit;
+    }
 
-    $servico->integrarTudo($pedidoEntity);
+    http_response_code(404);
+    echo json_encode(['erro' => 'Rota não encontrada']);
 } catch (Exception $e) {
-    die("Error: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
-
