@@ -1,40 +1,66 @@
 <?php
 namespace App\Http;
 
+use App\DTO\PedidoRequestDTO;
+use App\DTO\PedidoResponseDTO;
 use App\Integration\CRMIntegratorService;
 use App\Integration\FaturamentoIntegratorService;
 use App\Integration\IntegradorMultiploService;
+use App\Mapper\PedidoMapper;
 use App\Repository\PedidoRepository;
-use Domain\Entity\Pedido;
-use App\DTO\PedidoResponseDTO;
+use Domain\Log\LoggerInterface;
 
 class PedidoHandler
 {
-    public function __construct(private PedidoRepository $repo) {}
+    public function __construct(
+        private PedidoRepository $repo,
+        private LoggerInterface $logger
+    ) {}
 
     public function criarPedido(): void
     {
         try {
-            // Dados simulados
-            $pedido = new Pedido(
-                0,
-                'Cliente de Teste',
-                'Pedido de simulação via rota POST',
-                550.00
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+
+            $dto = new PedidoRequestDTO(
+                cliente: $data['cliente'] ?? '',
+                descricao: $data['descricao'] ?? '',
+                valor: isset($data['valor']) ? (float)$data['valor'] : 0.0
             );
+
+            $erros = [];
+            if (empty($dto->cliente)) {
+                $erros[] = "Cliente é obrigatório";
+            }
+            if (empty($dto->descricao)) {
+                $erros[] = "Descrição é obrigatória";
+            }
+            if ($dto->valor <= 0) {
+                $erros[] = "Valor deve ser maior que zero";
+            }
+
+            if (count($erros) > 0) {
+                http_response_code(400);
+                echo json_encode(['errors' => $erros]);
+                return;
+            }
+
+            $pedido = PedidoMapper::fromRequestDTO($dto);
 
             // Aplica desconto de 10%
             $pedido->aplicarDesconto(10);
 
-            // Integração (orquestrador)
+            $crm = new CRMIntegratorService($this->logger);
+            $faturamento = new FaturamentoIntegratorService($this->logger);
+
             $servico = new IntegradorMultiploService(
-                [new CRMIntegratorService(), new FaturamentoIntegratorService()],
+                [$crm, $faturamento],
                 $this->repo
             );
 
             $servico->integrarTudo($pedido);
 
-            // Retorno de sucesso
             http_response_code(201);
             header('Content-Type: application/json');
             echo json_encode(PedidoResponseDTO::fromEntity($pedido));
@@ -43,7 +69,6 @@ class PedidoHandler
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
 
     public function buscarPedidoPorId(int $id): void
     {

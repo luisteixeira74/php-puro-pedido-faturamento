@@ -56,7 +56,7 @@ class PedidoRepository
             $dados['cliente'],
             $dados['descricao'],
             (float) $dados['valor'],
-            $dados['desconto_aplicado'] ? 1 : 0
+            (bool) $dados['desconto_aplicado']
         );
 
         // Salva no cache após buscar do banco
@@ -81,7 +81,7 @@ class PedidoRepository
                 $dados['cliente'],
                 $dados['descricao'],
                 (float) $dados['valor'],
-                $dados['desconto_aplicado'] ? 1 : 0
+                (bool) $dados['desconto_aplicado']
             );
             $resultados[] = $pedido;
 

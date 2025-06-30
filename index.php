@@ -6,6 +6,7 @@ header('Content-Type: application/json');
 use Infra\Cache\RedisCacheService;
 use App\Repository\PedidoRepository;
 use App\Http\PedidoHandler;
+use Infra\Log\StdErrorLogger;
 
 try {
     $pdo = new PDO(
@@ -27,24 +28,25 @@ try {
     $redis->connect($host, 6379);
 
     $cacheService = new RedisCacheService($redis);
-    $repo = new PedidoRepository($pdo, $cacheService);
-    $handler = new PedidoHandler($repo);
+    $pedidoRepository = new PedidoRepository($pdo, $cacheService);
+    $logger = new StdErrorLogger();
+    $pedidoHandler = new PedidoHandler($pedidoRepository, $logger);
 
     $requestUri = $_SERVER['REQUEST_URI'];
     $method = $_SERVER['REQUEST_METHOD'];
 
     if ($method === 'POST' && $requestUri === '/pedido') {
-        $handler->criarPedido();
+        $pedidoHandler->criarPedido();
         exit;
     }
 
     if ($method === 'GET' && preg_match('#^/pedido/(\d+)$#', $requestUri, $matches)) {
-        $handler->buscarPedidoPorId((int)$matches[1]);
+        $pedidoHandler->buscarPedidoPorId((int)$matches[1]);
         exit;
     }
 
     if ($method === 'GET' && $requestUri === '/pedidos') {
-        $handler->buscarTodosPedidos();
+        $pedidoHandler->buscarTodosPedidos();
         exit;
     }
 

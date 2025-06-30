@@ -9,8 +9,13 @@ class Pedido
     private float $valor;
     private bool $descontoAplicado = false;
 
-    public function __construct(int $id, string $cliente, string $descricao, float $valor)
-    {
+    public function __construct(
+        int $id,
+        string $cliente,
+        string $descricao,
+        float $valor,
+        bool $descontoAplicado = false
+    ) {
         if ($valor <= 0) {
             throw new \InvalidArgumentException("O valor do pedido deve ser maior que zero");
         }
@@ -19,6 +24,7 @@ class Pedido
         $this->cliente = $cliente;
         $this->descricao = $descricao;
         $this->valor = $valor;
+        $this->descontoAplicado = $descontoAplicado;
     }
 
     public function getId(): int

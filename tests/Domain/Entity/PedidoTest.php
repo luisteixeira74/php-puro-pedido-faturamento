@@ -14,14 +14,32 @@ class PedidoTest extends TestCase
             id: 123,
             cliente: 'Cliente VIP',
             descricao: 'Compra grande',
-            valor: 550.00
+            valor: 50.00
         );
 
         // Act
         $pedido->aplicarDesconto(10.0);
 
         // Assert
-        $this->assertEquals(495.00, $pedido->getValor());
+        $this->assertEquals(45.00, $pedido->getValor());
         $this->assertTrue($pedido->isDescontoAplicado());
+    }
+
+    public function testLimiteDesconto()
+    {
+        // Arrange
+        $pedido = new Pedido(
+            id: 123,
+            cliente: 'Cliente VIP',
+            descricao: 'Compra grande',
+            valor: 550.00
+        );
+
+        // Assert
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Percentual inválido para desconto');
+
+        // Act
+        $pedido->aplicarDesconto(500);
     }
 }

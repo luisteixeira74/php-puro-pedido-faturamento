@@ -4,36 +4,34 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use App\Integration\IntegradorMultiploService;
-use App\DTO\PedidoDTO;
 use App\Integration\PedidoIntegratorInterface;
+use Domain\Entity\Pedido;
+use App\Repository\PedidoRepository;
 
 class IntegradorMultiploServiceTest extends TestCase
 {
-    public function testChamaTodosOsIntegradores(): void
+    public function testTodosOsIntegradoresSaoExecutadosComOMesmoPedido(): void
     {
-        $pedidoDTO = new PedidoDTO(1, 'José da Silva', 'Novo pedido', 100.0);
+        // Given: pedido e dois integradores mockados
+        $pedido = new Pedido(1, 'José da Silva', 'Novo pedido', 100.0);
 
-        // Converte para Entity antes de usar no domínio
-        $pedidoEntity = new \Domain\Entity\Pedido(
-            $pedidoDTO->id,
-            $pedidoDTO->cliente,
-            $pedidoDTO->descricao,
-            $pedidoDTO->valor
-        );
+        $integrador1 = $this->createMock(PedidoIntegratorInterface::class);
+        $integrador2 = $this->createMock(PedidoIntegratorInterface::class);
 
-        $mock1 = $this->createMock(PedidoIntegratorInterface::class);
-        $mock2 = $this->createMock(PedidoIntegratorInterface::class);
+        $integrador1->expects($this->once())
+                    ->method('integrar')
+                    ->with($pedido);
 
-        $mock1->expects($this->once())
-              ->method('integrar')
-              ->with($pedidoEntity);
+        $integrador2->expects($this->once())
+                    ->method('integrar')
+                    ->with($pedido);
 
-        $mock2->expects($this->once())
-              ->method('integrar')
-              ->with($pedidoEntity);
+        $repoMock = $this->createMock(PedidoRepository::class);
 
-        $service = new IntegradorMultiploService([$mock1, $mock2], 
-            $this->createMock(\App\Repository\PedidoRepository::class));
-        $service->integrarTudo($pedidoEntity);
+        // When: serviço de integração múltipla é executado
+        $servico = new IntegradorMultiploService([$integrador1, $integrador2], $repoMock);
+        $servico->integrarTudo($pedido);
+
+        // Then: asserções feitas com ->expects()
     }
 }
